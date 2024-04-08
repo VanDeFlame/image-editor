@@ -1,4 +1,4 @@
-# Template Frontend
+# Image Editor
 
 Technologies:
 
@@ -6,5 +6,4 @@ Technologies:
 - React
 - Typescript
 - Tailwind
-
-With `Eslint` and `Prettier` preconfigured.
+- Express

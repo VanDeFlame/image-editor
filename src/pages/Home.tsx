@@ -1,4 +1,11 @@
+import { useEffect } from 'react';
+import { getTest } from '../services/test';
+
 export function Home(): JSX.Element {
+	useEffect(() => {
+		getTest().then(console.log).catch(console.error);
+	}, []);
+
 	return (
 		<>
 			<main className='bg-blue-300'>
