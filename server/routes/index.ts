@@ -1,7 +1,16 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
+import { ImageController } from '../controllers/image.controller';
+import { multipartHandler } from '../middlewares/multipartHandler';
 
 export const routes = Router();
 
-routes.get('/', (_: Request, res: Response) => {
-	res.sendStatus(200);
-});
+routes.post(
+	'/image/upload',
+	multipartHandler.single('image'),
+	ImageController.upload
+);
+routes.get('/image/:id', ImageController.get);
+routes.get('/image/:id/reset', ImageController.reset);
+routes.delete('/image/:id', ImageController.destroy);
+routes.get('/image/:id/filter/:filter', ImageController.setFilter);
+routes.post('/image/:id/format', ImageController.toFormat);

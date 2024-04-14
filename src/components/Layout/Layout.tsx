@@ -1,5 +1,5 @@
-import { Logo } from '../Logo';
-import { Navbar } from '../Navbar';
+import { Logo } from './Logo';
+import { Navbar } from './Navbar';
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -7,9 +7,9 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps): JSX.Element {
 	return (
-		<div className='gridLayout'>
-			<header className='border-b-3 sticky top-0 border-b-violet-400 bg-stone-800 px-3'>
-				<div className='flex h-full items-center justify-between'>
+		<div className='gridLayout min-h-full bg-neutral-200 text-cyan-600 dark:bg-zinc-900 dark:text-gray-50'>
+			<header className='sticky top-0 border-b-2 border-b-cyan-600 bg-neutral-200 px-0 dark:border-b-cyan-500 dark:bg-zinc-900'>
+				<div className='flex h-full items-center justify-between px-4'>
 					<Logo />
 					<Navbar />
 				</div>
