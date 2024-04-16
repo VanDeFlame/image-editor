@@ -1,33 +1,25 @@
 import { useEffect, useState } from 'react';
 import MoonIcon from './Icons/MoonIcon';
 import SunIcon from './Icons/SunIcon';
+import { ThemeEnum } from '../types/ThemeEnum';
+import {
+	getDarkModePreference,
+	setThemePreference,
+} from '../utils/themePreference';
 
 export function ToggleDarkMode(): JSX.Element {
-	const [darkMode, setDarkMode] = useState(false);
+	const [darkMode, setDarkMode] = useState(getDarkModePreference());
 
 	const toggleDarkMode = (): void => {
 		setDarkMode(!darkMode);
 	};
 
 	const getTitle = (): string => {
-		return `Change to ${darkMode ? 'light' : 'dark'} mode`;
+		return `Change to ${darkMode ? ThemeEnum.LIGHT : ThemeEnum.DARK} mode`;
 	};
 
-	// useEffect(() => {
-	// 	const userPreference = window.matchMedia('prefers-color-scheme: light')
-	// 	document.documentElement.classList.toggle('dark');
-	// 	document.documentElement.style.colorScheme = darkMode ? 'light' : 'dark';
-
-	// })
-
 	useEffect(() => {
-		const userPreference = window.matchMedia('(prefers-color-scheme: dark)');
-		setDarkMode(userPreference.matches);
-	}, []);
-
-	useEffect(() => {
-		document.documentElement.classList.toggle('dark', darkMode);
-		document.documentElement.style.colorScheme = darkMode ? 'dark' : 'light';
+		setThemePreference(darkMode);
 	}, [darkMode]);
 
 	return (
