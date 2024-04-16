@@ -81,10 +81,7 @@ export class ImageService implements IImageService {
 		format: keyof FormatEnum,
 		options = {}
 	): Promise<ImageService> {
-		const result = await sharp(this.image)
-			.normalise()
-			.toFormat(format, options)
-			.toBuffer();
+		const result = await sharp(this.image).toFormat(format, options).toBuffer();
 		this.image = result;
 		return this;
 	}

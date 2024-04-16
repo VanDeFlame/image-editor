@@ -80,7 +80,8 @@ async function toFormat(
 	try {
 		const api = `${environment.API}/image/${id}/format`;
 		const response = await fetch(api, {
-			method: 'post',
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				format,
 				options,
