@@ -58,6 +58,7 @@ async function destroy(req: Request, res: Response): Promise<void> {
 async function setFilter(req: Request, res: Response): Promise<void> {
 	try {
 		const { id, filter } = req.params;
+		const options = req.body;
 
 		const instance = ImageService.getInstance(id);
 
@@ -70,6 +71,9 @@ async function setFilter(req: Request, res: Response): Promise<void> {
 				break;
 			case FilterEnum.NORMALISE:
 				await instance.normalise();
+				break;
+			case FilterEnum.BLUR:
+				await instance.blur(options);
 				break;
 			default:
 				res.status(400).json({ message: 'Filtro inválido' });

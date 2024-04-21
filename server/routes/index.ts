@@ -12,5 +12,5 @@ routes.post(
 routes.get('/image/:id', ImageController.get);
 routes.get('/image/:id/reset', ImageController.reset);
 routes.delete('/image/:id', ImageController.destroy);
-routes.get('/image/:id/filter/:filter', ImageController.setFilter);
+routes.post('/image/:id/filter/:filter', ImageController.setFilter);
 routes.post('/image/:id/format', ImageController.toFormat);

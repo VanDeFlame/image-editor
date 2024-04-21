@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button } from '../components/Common/Button';
+import { RangeSlider } from '../components/Common/RangeSlider';
 import { DropdownSection } from '../components/DropdownSection';
 import { ImagePreview } from '../components/ImagePreview';
 import ImageUploader from '../components/ImageUploader';
@@ -15,16 +16,19 @@ export function Home(): JSX.Element {
 		setGrayscaleFilter,
 		setNormaliseFilter,
 		setNegativeFilter,
+		setBlurFilter,
 		download,
 	} = useImage();
 
 	const [imageUrl, setImageUrl] = useState<string | null>(null);
+	const [optionsToShow, setOptionsToShow] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (state.image) {
 			setImageUrl(getImageAsUrl());
 		} else {
 			setImageUrl(null);
+			setOptionsToShow(null);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state.image]);
@@ -34,6 +38,21 @@ export function Home(): JSX.Element {
 			<main className='flex flex-col items-center gap-4 py-4 text-cyan-600 dark:text-cyan-500'>
 				<section className='h-100 flex w-full flex-wrap justify-center gap-4 overflow-hidden'>
 					<ImagePreview image={imageUrl} />
+				</section>
+				<section>
+					{optionsToShow === 'blur' && (
+						<RangeSlider
+							step={1}
+							min={3}
+							max={250}
+							initialValue={3}
+							title='Set the blur value:'
+							aria-label='Strengh of blur effect'
+							onSetValue={async (value: number): Promise<void> =>
+								await setBlurFilter(value / 10)
+							}
+						/>
+					)}
 				</section>
 			</main>
 			<aside className='top right flex flex-col items-center gap-4 py-4'>
@@ -49,6 +68,7 @@ export function Home(): JSX.Element {
 						<Button onClick={setGrayscaleFilter}>Grayscale</Button>
 						<Button onClick={setNormaliseFilter}>Normalise</Button>
 						<Button onClick={setNegativeFilter}>Negative</Button>
+						<Button onClick={(): void => setOptionsToShow('blur')}>Blur</Button>
 					</DropdownSection>
 					<DropdownSection title='Download'>
 						<Button onClick={(): Promise<void> => download('png')}>PNG</Button>

@@ -29,6 +29,7 @@ interface IUseImage {
 	setGrayscaleFilter: () => Promise<void>;
 	setNegativeFilter: () => Promise<void>;
 	setNormaliseFilter: () => Promise<void>;
+	setBlurFilter: (value?: number) => Promise<void>;
 	download: (format?: string, options?: object) => Promise<void>;
 }
 
@@ -82,6 +83,12 @@ export function useImage(): IUseImage {
 		const image = await ImageService.filter(state.imageId, 'normalise');
 		setState({ image });
 	};
+	const setBlurFilter = async (value?: number): Promise<void> => {
+		const image = await ImageService.filter(state.imageId, 'blur', {
+			sigma: value,
+		});
+		setState({ image });
+	};
 
 	/* UTILS */
 	const getImageAsUrl = (): string => {
@@ -120,6 +127,7 @@ export function useImage(): IUseImage {
 		setGrayscaleFilter,
 		setNegativeFilter,
 		setNormaliseFilter,
+		setBlurFilter,
 		download,
 	};
 }

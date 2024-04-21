@@ -77,6 +77,12 @@ export class ImageService implements IImageService {
 		return this;
 	}
 
+	public async blur({ sigma }: { sigma?: number }): Promise<ImageService> {
+		const result = await sharp(this.image).blur(sigma).toBuffer();
+		this.image = result;
+		return this;
+	}
+
 	public async toFormat(
 		format: keyof FormatEnum,
 		options = {}

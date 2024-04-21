@@ -59,10 +59,18 @@ async function reset(id: string): Promise<ArrayBuffer> {
 	}
 }
 
-async function filter(id: string, filter: string): Promise<ArrayBuffer> {
+async function filter(
+	id: string,
+	filter: string,
+	options?: object
+): Promise<ArrayBuffer> {
 	try {
 		const api = `${environment.API}/image/${id}/filter/${filter}`;
-		const response = await fetch(api);
+		const response = await fetch(api, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(options),
+		});
 		const buffer = await response.arrayBuffer();
 
 		return buffer;
