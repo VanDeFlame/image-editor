@@ -3,6 +3,8 @@ import { buttonStyles } from './Common/Button';
 import UploadIcon from './Icons/UploadIcon';
 
 function ImageUploader({ handleFileLoad }: any): React.ReactNode {
+	const inputRef: React.Ref<HTMLInputElement> | null = React.useRef(null);
+
 	const handleFileChange = (
 		event: React.ChangeEvent<HTMLInputElement>
 	): void => {
@@ -39,6 +41,12 @@ function ImageUploader({ handleFileLoad }: any): React.ReactNode {
 		event.preventDefault();
 	};
 
+	const handleLabel = (e: React.KeyboardEvent<HTMLLabelElement>): void => {
+		if ((e.key !== 'Enter' && e.code !== 'Space') || inputRef.current === null)
+			return;
+		inputRef.current.click();
+	};
+
 	return (
 		<div
 			role='form'
@@ -54,11 +62,16 @@ function ImageUploader({ handleFileLoad }: any): React.ReactNode {
 			<hr className='w-full border-t-2 border-dashed border-cyan-600 dark:border-cyan-500' />
 			<div className='flex flex-col gap-2'>
 				<label
+					tabIndex={1}
+					onKeyUp={handleLabel}
 					htmlFor='fileInput'
+					aria-label='Upload an image from your files'
+					title='Upload an image from your files'
 					className={`${buttonStyles} cursor-pointer px-8 py-2`}
 				>
 					Choose a file
 					<input
+						ref={inputRef}
 						id='fileInput'
 						type='file'
 						accept='image/*'
