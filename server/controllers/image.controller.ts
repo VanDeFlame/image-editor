@@ -27,6 +27,19 @@ async function get(req: Request, res: Response): Promise<void> {
 		console.error(error);
 	}
 }
+async function getMetadata(req: Request, res: Response): Promise<void> {
+	try {
+		const { id } = req.params;
+
+		const instance = ImageService.getInstance(id);
+		const metadata = await instance.getMetadata();
+
+		res.status(200).json(metadata);
+	} catch (error) {
+		res.sendStatus(500);
+		console.error(error);
+	}
+}
 
 async function reset(req: Request, res: Response): Promise<void> {
 	try {
@@ -108,6 +121,7 @@ async function toFormat(req: Request, res: Response): Promise<void> {
 export const ImageController = {
 	upload,
 	get,
+	getMetadata,
 	reset,
 	destroy,
 	setFilter,

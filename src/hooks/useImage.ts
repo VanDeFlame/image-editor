@@ -1,28 +1,30 @@
 import { useCompoundState } from './useCompoundState';
 import ImageService from '../services/image.service';
+import { FileMetadata, ImageMetadata } from '../types/ImageMetadata';
 import { arrayBufferToUrl } from '../utils/arrayBufferToUrl';
 import { downloadFile } from '../utils/downloadFile';
 import { removeExtension } from '../utils/removeExtension';
 
 interface IUseImageState {
 	imageId: string;
-	mimetype: string;
-	originalFilename: string;
+	metadata: ImageMetadata | null;
 	image: ArrayBuffer | null;
 	error: Error | null;
 }
 
 const initialState: IUseImageState = {
 	imageId: '',
-	mimetype: '',
-	originalFilename: '',
+	metadata: null,
 	image: null,
 	error: null,
 };
 
 interface IUseImage {
 	state: IUseImageState;
-	uploadImage: (file: File) => void;
+	uploadImage: (
+		result: ArrayBuffer,
+		fileMetadata: FileMetadata
+	) => Promise<void>;
 	resetImage: () => Promise<void>;
 	clearImage: () => Promise<void>;
 	getImageAsUrl: () => string;
@@ -37,26 +39,28 @@ export function useImage(): IUseImage {
 	const [state, setState] = useCompoundState<IUseImageState>(initialState);
 
 	/* CHANGE IMAGE */
-	const uploadImage = (file: File): void => {
-		const reader = new FileReader();
-		reader.onload = (): void => {
-			if (reader.result instanceof ArrayBuffer) {
-				clearImage();
+	const uploadImage = async (
+		result: ArrayBuffer,
+		fileMetadata: FileMetadata
+	): Promise<void> => {
+		try {
+			clearImage();
 
-				ImageService.upload({ image: reader.result })
-					.then(({ id }) => {
-						setState({
-							imageId: id,
-							mimetype: file.type,
-							originalFilename: file.name,
-						});
-						return ImageService.get(id);
-					})
-					.then((image: ArrayBuffer) => setState({ image }))
-					.catch((error: Error) => setState({ error }));
-			}
-		};
-		reader.readAsArrayBuffer(file);
+			const { id } = await ImageService.upload({ image: result });
+			const image = await ImageService.get(id);
+			const metadata = await ImageService.getMetadata(id);
+
+			setState({
+				imageId: id,
+				image,
+				metadata: {
+					...metadata,
+					...fileMetadata,
+				},
+			});
+		} catch (error: any) {
+			setState({ error });
+		}
 	};
 
 	const resetImage = async (): Promise<void> => {
@@ -93,12 +97,12 @@ export function useImage(): IUseImage {
 	/* UTILS */
 	const getImageAsUrl = (): string => {
 		if (!state.image) return '';
-		return arrayBufferToUrl(state.image, state.mimetype);
+		return arrayBufferToUrl(state.image, state.metadata?.mimetype);
 	};
 
 	const generateFilename = (extension: string): string => {
-		const name = state.originalFilename
-			? removeExtension(state.originalFilename)
+		const name = state.metadata?.filename
+			? removeExtension(state.metadata.filename)
 			: 'output';
 
 		return `${name}.${extension}`;
@@ -106,7 +110,8 @@ export function useImage(): IUseImage {
 
 	/* DOWNLOADS */
 	const download = async (format?: string, options = {}): Promise<void> => {
-		const outputFormat = format ?? state.mimetype.split('/')[1];
+		const outputFormat: string =
+			format ?? state.metadata!.mimetype.split('/')[1];
 
 		const image = await ImageService.toFormat(
 			state.imageId,

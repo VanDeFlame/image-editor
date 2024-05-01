@@ -1,4 +1,5 @@
 import { environment } from '../config/environment';
+import { ImageContentMetadata } from '../types/ImageMetadata';
 
 async function upload(data: { image: ArrayBuffer }): Promise<{
 	id: string;
@@ -40,6 +41,19 @@ async function get(id: string): Promise<ArrayBuffer> {
 		const buffer = await response.arrayBuffer();
 
 		return buffer;
+	} catch (e: any) {
+		console.error(e);
+		throw e;
+	}
+}
+
+async function getMetadata(id: string): Promise<ImageContentMetadata> {
+	try {
+		const api = `${environment.API}/image/${id}/metadata`;
+		const response = await fetch(api);
+		const metadata: ImageContentMetadata = await response.json();
+
+		return metadata;
 	} catch (e: any) {
 		console.error(e);
 		throw e;
@@ -109,6 +123,7 @@ export default {
 	reset,
 	destroy,
 	get,
+	getMetadata,
 	filter,
 	toFormat,
 };

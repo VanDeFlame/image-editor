@@ -10,6 +10,7 @@ routes.post(
 	ImageController.upload
 );
 routes.get('/image/:id', ImageController.get);
+routes.get('/image/:id/metadata', ImageController.getMetadata);
 routes.get('/image/:id/reset', ImageController.reset);
 routes.delete('/image/:id', ImageController.destroy);
 routes.post('/image/:id/filter/:filter', ImageController.setFilter);

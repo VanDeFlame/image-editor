@@ -1,4 +1,4 @@
-import sharp, { FormatEnum } from 'sharp';
+import sharp, { FormatEnum, Metadata } from 'sharp';
 import { generarId } from '../helpers/generarId';
 
 interface IImageService {
@@ -43,6 +43,10 @@ export class ImageService implements IImageService {
 
 	get image(): Buffer {
 		return this.currentImage ?? this.original;
+	}
+
+	public async getMetadata(): Promise<Metadata> {
+		return await sharp(this.image).metadata();
 	}
 
 	/* SETTERS */

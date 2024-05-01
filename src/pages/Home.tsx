@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '../components/Common/Button';
 import { RangeSlider } from '../components/Common/RangeSlider';
 import { DropdownSection } from '../components/DropdownSection';
+import { ImageInfo } from '../components/ImageInfo';
 import { ImagePreview } from '../components/ImagePreview';
 import ImageUploader from '../components/ImageUploader';
 import { useImage } from '../hooks/useImage';
@@ -56,7 +57,8 @@ export function Home(): JSX.Element {
 				</section>
 			</main>
 			<aside className='top right flex flex-col items-center gap-4 py-4'>
-				<ImageUploader handleFileLoad={uploadImage} />
+				<ImageUploader handleImageUpload={uploadImage} />
+				{state.metadata && <ImageInfo data={state.metadata} />}
 			</aside>
 			{state.image && (
 				<aside className='bottom left flex flex-col gap-4 py-4'>

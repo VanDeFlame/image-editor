@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { buttonStyles } from './Common/Button';
 import UploadIcon from './Icons/UploadIcon';
 
-function ImageUploader({ handleFileLoad }: any): React.ReactNode {
+function ImageUploader({ handleImageUpload }: any): React.ReactNode {
 	const inputRef: React.Ref<HTMLInputElement> | null = React.useRef(null);
+	const reader = useMemo(() => new FileReader(), []);
+
+	const handleFileLoad = (file: File): void => {
+		reader.onload = (): void => {
+			if (reader.result instanceof ArrayBuffer) {
+				const fileMetadata = {
+					mimetype: file.type,
+					filename: file.name,
+				};
+
+				handleImageUpload(reader.result, fileMetadata);
+			}
+		};
+
+		reader.readAsArrayBuffer(file);
+	};
 
 	const handleFileChange = (
 		event: React.ChangeEvent<HTMLInputElement>
